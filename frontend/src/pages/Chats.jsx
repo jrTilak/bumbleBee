@@ -1,20 +1,48 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
+import { FaPlus } from "react-icons/fa6";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import pp from "../images/favicon.png";
-
+import { VscSend } from "react-icons/vsc";
+import { getUserChats, sendChatRequest } from "../helpers/chats";
+import { IoIosLogOut } from "react-icons/io";
+import { MdOutlineDelete } from "react-icons/md";
 const Chats = () => {
   const navigate = useNavigate();
   const { isUserLoggedIn, currentUser, isFetching } = useAuthContext();
+  const [formData, setFormData] = useState("");
+  const [chatMessages, setChatMessages] = useState([]);
+  const handleSubmit = async () => {
+    const content = formData;
+    const newMessage = { role: "user", content };
+    setChatMessages((prev) => [...prev, newMessage]);
+    const chatData = await sendChatRequest(content);
+    setChatMessages([...chatData.chats]);
+    //
+  };
+  
+  useLayoutEffect(() => {
+    const fetchChats = async () => {
+      if (!isFetching && isUserLoggedIn && currentUser) {
+        const chats = await getUserChats();
+        console.log(chats);
+        setChatMessages([...chats]);
+      }
+    };
+    fetchChats();
+  }, [isFetching, isUserLoggedIn, currentUser]);
+  // useEffect(() => {
+  //   if (isUserLoggedIn) {
+  //     return navigate("/login");
+  //   }
+  // }, []); //
 
-  useEffect(() => {
-    if (!isUserLoggedIn) {
-      toast.error("You need to login first!");
-      // href to /login using react-router-dom
-      navigate("/login");
-    }
-  }, [isUserLoggedIn]);
+  const handleNewChat = () => {
+    toast.error("Due to API limitations, this feature is disabled.");
+  };
+
   return (
     <>
       <div className="flex h-screen antialiased text-gray-800">
@@ -22,82 +50,55 @@ const Chats = () => {
           <div className="flex flex-col flex-shrink-0 w-64 py-8 pl-6 pr-2 bg-white">
             <div className="flex flex-row items-center justify-center w-full h-12">
               <div className="flex items-center justify-center w-10 h-10 text-indigo-700 bg-indigo-100 rounded-2xl">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                  ></path>
-                </svg>
+                <IoChatboxEllipsesOutline className="w-6 h-6" />
               </div>
               <div className="ml-2 text-2xl font-bold">All Chats</div>
             </div>
-            <div className="flex flex-col mt-8">
-              <div className="flex flex-row items-center justify-between text-xs">
-                <span className="font-bold">Active Conversations</span>
-                <span className="flex items-center justify-center w-4 h-4 bg-gray-300 rounded-full">
-                  4
-                </span>
+            <div className="flex flex-col justify-between h-full mt-8">
+              <div>
+                <div className="flex flex-row items-center justify-between text-xs">
+                  <span className="font-bold">Active Conversations</span>
+                  <span
+                    onClick={handleNewChat}
+                    className="flex items-center justify-center w-6 h-6 bg-gray-300 rounded-full cursor-pointer"
+                  >
+                    <FaPlus className="w-4 h-4" />
+                  </span>
+                </div>
+                <div className="flex flex-col h-48 mt-4 -mx-2 space-y-1 overflow-y-auto">
+                  {chatMessages.length > 0 ? (
+                    <button className="flex flex-row items-center p-2 bg-gray-100 rounded-xl">
+                      <div className="ml-2 text-sm font-semibold truncate ">
+                        New Chat:
+                        <span className="font-medium">
+                          {" "}
+                          {chatMessages[0].content}
+                        </span>
+                      </div>
+                    </button>
+                  ) : (
+                    <button className="flex flex-row items-center p-2 bg-gray-100 rounded-xl">
+                      <div className="ml-2 text-sm truncate ">
+                        You have no active conversations
+                      </div>
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-col h-48 mt-4 -mx-2 space-y-1 overflow-y-auto">
-                <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
-                  <div className="flex items-center justify-center w-8 h-8 bg-indigo-200 rounded-full">
-                    H
-                  </div>
-                  <div className="ml-2 text-sm font-semibold">Henry Boyd</div>
-                </button>
-                <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
-                  <div className="flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full">
-                    M
-                  </div>
-                  <div className="ml-2 text-sm font-semibold">Marta Curtis</div>
-                  <div className="flex items-center justify-center w-4 h-4 ml-auto text-xs leading-none text-white bg-red-500 rounded">
-                    2
-                  </div>
-                </button>
-                <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
-                  <div className="flex items-center justify-center w-8 h-8 bg-orange-200 rounded-full">
-                    P
-                  </div>
-                  <div className="ml-2 text-sm font-semibold">
-                    Philip Tucker
-                  </div>
-                </button>
-                <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
-                  <div className="flex items-center justify-center w-8 h-8 bg-pink-200 rounded-full">
-                    C
-                  </div>
-                  <div className="ml-2 text-sm font-semibold">
-                    Christine Reid
-                  </div>
-                </button>
-                <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
-                  <div className="flex items-center justify-center w-8 h-8 bg-purple-200 rounded-full">
-                    J
-                  </div>
-                  <div className="ml-2 text-sm font-semibold">Jerry Guzman</div>
-                </button>
-              </div>
-              <div className="flex flex-row items-center justify-between mt-6 text-xs">
-                <span className="font-bold">Archivied</span>
-                <span className="flex items-center justify-center w-4 h-4 bg-gray-300 rounded-full">
-                  7
-                </span>
-              </div>
-              <div className="flex flex-col mt-4 -mx-2 space-y-1">
-                <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
-                  <div className="flex items-center justify-center w-8 h-8 bg-indigo-200 rounded-full">
-                    H
-                  </div>
-                  <div className="ml-2 text-sm font-semibold">Henry Boyd</div>
-                </button>
+              <div>
+                <div className="flex flex-row items-center justify-between mt-6 text-xs">
+                  <span className="font-bold">Settings</span>
+                </div>
+                <div className="flex flex-col mt-4 -mx-2 space-y-1">
+                  <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
+                    <MdOutlineDelete className="w-5 h-5" />
+                    <div className="ml-2 text-sm">Clear conversations</div>
+                  </button>
+                  <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
+                    <IoIosLogOut className="w-5 h-5" />
+                    <div className="ml-2 text-sm">Logout</div>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -105,36 +106,65 @@ const Chats = () => {
             <div className="flex flex-col flex-auto flex-shrink-0 h-full p-4 bg-gray-100 rounded-2xl">
               <div className="flex flex-col h-full mb-4 overflow-x-auto">
                 <div className="flex flex-col h-full">
+                  <div className="flex flex-col items-center gap-2">
+                    <h1 className="text-2xl font-semibold text-center">
+                      BumbleBee 1.0
+                    </h1>
+                    <p className="px-4 py-2 text-sm text-center bg-red-200 w-max rounded-xl">
+                      Due to API limitations, you can send only 10 messages per
+                      day.
+                    </p>
+                  </div>
+
                   <div className="grid grid-cols-12 gap-y-2">
-                    <BumblebeeChatMessage message="Hello, how are you?" />
-                    <UserChatMessage name="Henry Boyd" message="I'm fine!" />
+                    {chatMessages.length > 0 &&
+                      chatMessages?.map((msg) => {
+                        if (msg.role === "user") {
+                          return (
+                            <UserChatMessage
+                              key={msg._id}
+                              name={currentUser.name}
+                              message={msg.content}
+                            />
+                          );
+                        } else {
+                          return (
+                            <BumblebeeChatMessage
+                              key={msg._id}
+                              message={msg.content}
+                            />
+                          );
+                        }
+                      })}
                   </div>
                 </div>
               </div>
               {/* <div className="flex flex-row items-center w-full h-16 px-4 bg-white rounded-xl"> */}
-                <div className="flex-grow bg-white rounded-xl">
-                  <div className="relative w-full">
-                    <input
-                      type="text"
-                      className="flex w-full h-10 pl-4 border rounded-xl focus:outline-none focus:border-indigo-300"
-                    />
-                    <button className="absolute top-0 right-0 flex items-center justify-center w-12 h-full text-gray-400 hover:text-gray-600">
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
+              <div className="flex-grow bg-white rounded-xl">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    placeholder="Send a message..."
+                    onChange={(e) => setFormData(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && e.shiftKey) {
+                        //add new line
+                        setFormData((prev) => prev + "\n");
+                      } else if (e.key === "Enter") {
+                        handleSubmit();
+                      }
+                    }}
+                    value={formData}
+                    className="flex w-full h-10 pl-4 border rounded-xl focus:outline-none focus:border-indigo-300"
+                  />
+                  <button
+                    onClick={handleSubmit}
+                    type="button"
+                    className="absolute top-0 right-0 flex items-center justify-center w-12 h-full text-gray-400 hover:text-gray-600"
+                  >
+                    <VscSend className="w-6 h-6" />
+                  </button>
+                </div>
                 {/* </div> */}
               </div>
             </div>

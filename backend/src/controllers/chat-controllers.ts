@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/User.js";
 import { OpenAIApi, ChatCompletionRequestMessage } from "openai";
-import { openAIConfig } from "../config/openai.config.js";
+import { configureOpenAI } from "../config/openai.config.js";
 export const generateChatCompletion = async (
   req: Request,
   res: Response,
@@ -23,7 +23,7 @@ export const generateChatCompletion = async (
     user.chats.push({ content: message, role: "user" });
 
     // send all chats with new one to openAI API
-    const config = openAIConfig();
+    const config = configureOpenAI();
     const openai = new OpenAIApi(config);
     // get latest response
     const chatResponse = await openai.createChatCompletion({
@@ -53,7 +53,7 @@ export const sendChatsToUser = async (
     if (user._id.toString() !== res.locals.jwtData.id) {
       return res.status(401).send("Permissions didn't match");
     }
-    return res.status(200).json({ message: "OK", chats: user.chats });
+    return res.status(200).json({ message: "OK", data: user.chats });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: "ERROR", cause: error.message });
