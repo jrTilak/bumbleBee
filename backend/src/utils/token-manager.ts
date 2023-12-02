@@ -19,7 +19,7 @@ export const verifyToken = async (
   if (!token || token.trim() === "") {
     const response = {
       status: 400,
-      message: "Token not found",
+      message: "Cookies not found, Please login again!",
       data: null,
     };
     return res.status(response.status).json(response);
@@ -30,7 +30,7 @@ export const verifyToken = async (
         reject(err.message);
         const response = {
           status: 401,
-          message: "Token Expired, Please login again",
+          message: "Token Expired, Please login again!",
           data: null,
         };
         return res.status(response.status).json(response);

@@ -6,23 +6,65 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import pp from "../images/favicon.png";
 import { VscSend } from "react-icons/vsc";
-import { getUserChats, sendChatRequest } from "../helpers/chats";
+import {
+  clearConversation,
+  getUserChats,
+  sendChatRequest,
+} from "../helpers/chats";
 import { IoIosLogOut } from "react-icons/io";
 import { MdOutlineDelete } from "react-icons/md";
+import ReactLoading from "react-loading";
+
 const Chats = () => {
   const navigate = useNavigate();
   const { isUserLoggedIn, currentUser, isFetching } = useAuthContext();
+  const [isChatSending, setIsChatSending] = useState(false); //for disabling the send button
   const [formData, setFormData] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
+
   const handleSubmit = async () => {
+    isChatSending && toast.error("Please wait before sending another message!");
+    setIsChatSending(true);
     const content = formData;
     const newMessage = { role: "user", content };
     setChatMessages((prev) => [...prev, newMessage]);
-    const chatData = await sendChatRequest(content);
-    setChatMessages([...chatData.chats]);
+    sendChatRequest(content)
+      .then((res) => {
+        console.log(res);
+        setChatMessages((prev) => [...prev, res.data]);
+        setFormData("");
+        setIsChatSending(false);
+      })
+      .catch((err) => {
+        toast.error(err.message || "Something went wrong");
+        //select the last child of id all-chats and make the bg red of its child having class chat-content
+        const lastChild = document.querySelector("#all-chats").lastChild;
+        lastChild.querySelector(".chat-content").classList.add("bg-red-200");
+        setIsChatSending(false);
+      });
+
     //
   };
-  
+
+  const handleClearChats = async () => {
+    await toast.promise(clearConversation(), {
+      loading: "Clearing all conversations...",
+      success: (res) => {
+        setChatMessages([]);
+        return res.message;
+      },
+      error: (err) => {
+        return err.message;
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (!isUserLoggedIn) {
+      return navigate("/login");
+    }
+  }, []); //
+
   useLayoutEffect(() => {
     const fetchChats = async () => {
       if (!isFetching && isUserLoggedIn && currentUser) {
@@ -32,12 +74,13 @@ const Chats = () => {
       }
     };
     fetchChats();
-  }, [isFetching, isUserLoggedIn, currentUser]);
-  // useEffect(() => {
-  //   if (isUserLoggedIn) {
-  //     return navigate("/login");
-  //   }
-  // }, []); //
+  }, []);
+
+  // scroll to bottom of chat
+  useEffect(() => {
+    const chat = document.querySelector("#all-chats");
+    chat.scrollTo(0, chat.scrollHeight);
+  }, [chatMessages]);
 
   const handleNewChat = () => {
     toast.error("Due to API limitations, this feature is disabled.");
@@ -90,7 +133,10 @@ const Chats = () => {
                   <span className="font-bold">Settings</span>
                 </div>
                 <div className="flex flex-col mt-4 -mx-2 space-y-1">
-                  <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
+                  <button
+                    onClick={handleClearChats}
+                    className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl"
+                  >
                     <MdOutlineDelete className="w-5 h-5" />
                     <div className="ml-2 text-sm">Clear conversations</div>
                   </button>
@@ -116,7 +162,7 @@ const Chats = () => {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-12 gap-y-2">
+                  <div id="all-chats" className="grid grid-cols-12 gap-y-2">
                     {chatMessages.length > 0 &&
                       chatMessages?.map((msg) => {
                         if (msg.role === "user") {
@@ -143,6 +189,8 @@ const Chats = () => {
               <div className="flex-grow bg-white rounded-xl">
                 <div className="relative w-full">
                   <input
+                    autoCapitalize="sentences"
+                    autoFocus
                     type="text"
                     placeholder="Send a message..."
                     onChange={(e) => setFormData(e.target.value)}
@@ -162,7 +210,16 @@ const Chats = () => {
                     type="button"
                     className="absolute top-0 right-0 flex items-center justify-center w-12 h-full text-gray-400 hover:text-gray-600"
                   >
-                    <VscSend className="w-6 h-6" />
+                    {isChatSending ? (
+                      <ReactLoading
+                        type="spin"
+                        color="#000"
+                        height={24}
+                        width={24}
+                      />
+                    ) : (
+                      <VscSend className="w-6 h-6" />
+                    )}
                   </button>
                 </div>
                 {/* </div> */}
@@ -190,7 +247,7 @@ const UserChatMessage = ({ name, message }) => {
     <div className="col-start-6 col-end-13 p-3 rounded-lg">
       <div className="flex flex-row-reverse items-center justify-start">
         <UserAvatar name={name} />
-        <div className="relative px-4 py-2 mr-3 text-sm bg-indigo-100 shadow rounded-xl">
+        <div className="relative px-4 py-2 mr-3 text-sm bg-indigo-100 shadow chat-content rounded-xl">
           <div>{message}</div>
         </div>
       </div>

@@ -10,10 +10,14 @@ export const generateChatCompletion = async (
   const { message } = req.body;
   try {
     const user = await User.findById(res.locals.jwtData.id);
-    if (!user)
-      return res
-        .status(401)
-        .json({ message: "User not registered OR Token malfunctioned" });
+    if (!user) {
+      const response = {
+        status: 401,
+        message: "User not registered OR Token malfunctioned",
+        data: null,
+      };
+      return res.status(response.status).json(response);
+    }
     // grab chats of user
     const chats = user.chats.map(({ role, content }) => ({
       role,
@@ -32,10 +36,20 @@ export const generateChatCompletion = async (
     });
     user.chats.push(chatResponse.data.choices[0].message);
     await user.save();
-    return res.status(200).json({ chats: user.chats });
+    const response = {
+      status: 200,
+      message: "OK",
+      data: chatResponse.data.choices[0].message,
+    };
+    return res.status(response.status).json(response);
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Something went wrong" });
+    const response = {
+      status: 500,
+      message: "Something went wrong, Please try again!",
+      data: error.message,
+    };
+    return res.status(response.status).json(response);
   }
 };
 
@@ -69,17 +83,37 @@ export const deleteChats = async (
     //user token check
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
-      return res.status(401).send("User not registered OR Token malfunctioned");
+      const response = {
+        status: 401,
+        message: "User not registered OR Token malfunctioned",
+        data: null,
+      };
+      return res.status(response.status).json(response);
     }
     if (user._id.toString() !== res.locals.jwtData.id) {
-      return res.status(401).send("Permissions didn't match");
+      const response = {
+        status: 401,
+        message: "Permissions didn't match",
+        data: null,
+      };
+      return res.status(response.status).json(response);
     }
     //@ts-ignore
     user.chats = [];
     await user.save();
-    return res.status(200).json({ message: "OK" });
+    const response = {
+      status: 200,
+      message: "Conversation deleted successfully!",
+      data: null,
+    };
+    return res.status(response.status).json(response);
   } catch (error) {
     console.log(error);
-    return res.status(200).json({ message: "ERROR", cause: error.message });
+    const response = {
+      status: 500,
+      message: "Something went wrong, Please try again!",
+      data: error.message,
+    };
+    return res.status(response.status).json(response);
   }
 };
