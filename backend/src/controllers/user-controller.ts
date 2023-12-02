@@ -119,10 +119,12 @@ export const userLogin = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: process.env.FRONTEND_DOMAIN,
+      domain: "localhost",
       expires,
       httpOnly: true,
       signed: true,
+      sameSite: "none",
+      secure: process.env.NODE_ENV === "production",
     });
 
     const response = {
