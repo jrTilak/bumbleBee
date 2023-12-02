@@ -46,6 +46,8 @@ export const userSignup = async (
       domain: process.env.FRONTEND_URL,
       signed: true,
       path: "/",
+      sameSite: "none",
+      secure: true,
     });
 
     const token = createToken(user._id.toString(), user.email, "7d");
@@ -53,7 +55,7 @@ export const userSignup = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
+      domain: process.env.FRONTEND_DOMAIN,
       expires,
       httpOnly: true,
       signed: true,
@@ -111,6 +113,8 @@ export const userLogin = async (
       httpOnly: true,
       domain: process.env.FRONTEND_DOMAIN,
       signed: true,
+      sameSite: "none",
+      secure: true,
       path: "/",
     });
 
@@ -119,12 +123,12 @@ export const userLogin = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
+      domain: process.env.FRONTEND_DOMAIN,
       expires,
       httpOnly: true,
       signed: true,
       sameSite: "none",
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
     });
 
     const response = {
@@ -205,9 +209,11 @@ export const userLogout = async (
 
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      domain: "localhost",
+      domain: process.env.FRONTEND_DOMAIN,
       signed: true,
       path: "/",
+      sameSite: "none",
+      secure: true,
     });
 
     return res
