@@ -43,7 +43,7 @@ export const userSignup = async (
     // create token and store cookie
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      domain: process.env.FRONTEND_URL,
+      domain: process.env.FRONTEND_DOMAIN,
       signed: true,
       path: "/",
       sameSite: "none",
