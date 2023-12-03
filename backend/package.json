@@ -2,12 +2,12 @@
   "name": "bumblebee-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "index.ts",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\" ",
-    "start": "node dist/index.js",
-    "vercel-build": "echo hello"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
