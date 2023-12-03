@@ -66,7 +66,7 @@ export const userSignup = async (
     const response = {
       status: 201,
       message: "User registered successfully!",
-      data: { name: user.name, email: user.email },
+      data: { name: user.name, email: user.email, credits: user.credits },
     };
     return res.status(response.status).json(response);
   } catch (error) {
@@ -134,7 +134,7 @@ export const userLogin = async (
     const response = {
       status: 200,
       message: "User logged in successfully!",
-      data: { name: user.name, email: user.email },
+      data: { name: user.name, email: user.email, credits: user.credits },
     };
     return res.status(response.status).json(response);
   } catch (error) {
@@ -176,7 +176,7 @@ export const verifyUser = async (
     const response = {
       status: 200,
       message: "User verified successfully!",
-      data: { name: user.name, email: user.email },
+      data: { name: user.name, email: user.email, credits: user.credits },
     };
     return res.status(response.status).json(response);
   } catch (error) {
@@ -201,10 +201,20 @@ export const userLogout = async (
     //user token check
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
-      return res.status(401).send("User not registered OR Token malfunctioned");
+      const response = {
+        status: 401,
+        message: "User not registered OR Token malfunctioned",
+        data: null,
+      };
+      return res.status(response.status).json(response);
     }
     if (user._id.toString() !== res.locals.jwtData.id) {
-      return res.status(401).send("Permissions didn't match");
+      const response = {
+        status: 401,
+        message: "Permissions didn't match",
+        data: null,
+      };
+      return res.status(response.status).json(response);
     }
 
     res.clearCookie(COOKIE_NAME, {
@@ -216,11 +226,20 @@ export const userLogout = async (
       secure: true,
     });
 
-    return res
-      .status(200)
-      .json({ message: "OK", name: user.name, email: user.email });
+    const response = {
+      status: 200,
+      message: "User logged out successfully!",
+      data: null,
+    };
+    return res.status(response.status).json(response);
   } catch (error) {
     console.log(error);
-    return res.status(200).json({ message: "ERROR", cause: error.message });
+    const response = {
+      status: 500,
+      message: "Unknown error occurred. Try Again!",
+      errors: error.message,
+      data: null,
+    };
+    return res.status(response.status).json(response);
   }
 };

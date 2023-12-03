@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import pp from "../images/favicon.png";
 import { VscSend } from "react-icons/vsc";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import {
   clearConversation,
   getUserChats,
@@ -14,6 +16,7 @@ import {
 import { IoIosLogOut } from "react-icons/io";
 import { MdOutlineDelete } from "react-icons/md";
 import ReactLoading from "react-loading";
+import { logout } from "../helpers/auth";
 
 const Chats = () => {
   const navigate = useNavigate();
@@ -21,26 +24,37 @@ const Chats = () => {
   const [isChatSending, setIsChatSending] = useState(false); //for disabling the send button
   const [formData, setFormData] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
+  const [userCredits, setUserCredits] = useState(0);
+
+  useEffect(() => {
+    if (currentUser) {
+      setUserCredits(currentUser.credits);
+    }
+  }, [currentUser]);
 
   const handleSubmit = async () => {
-    isChatSending && toast.error("Please wait before sending another message!");
+    if (formData.length === 0) return toast.error("Please enter a message!");
+    if (isChatSending)
+      return toast.error("Please wait for the previous message to be sent!");
     setIsChatSending(true);
     const content = formData;
     const newMessage = { role: "user", content };
     setChatMessages((prev) => [...prev, newMessage]);
+    setFormData("");
     sendChatRequest(content)
       .then((res) => {
         console.log(res);
         setChatMessages((prev) => [...prev, res.data]);
-        setFormData("");
         setIsChatSending(false);
+        setUserCredits((prev) => prev - 1);
       })
       .catch((err) => {
-        toast.error(err.message || "Something went wrong");
-        //select the last child of id all-chats and make the bg red of its child having class chat-content
-        const lastChild = document.querySelector("#all-chats").lastChild;
-        lastChild.querySelector(".chat-content").classList.add("bg-red-200");
+        console.log(err);
+        toast.error(err.response.data.message || "Something went wrong");
+        //remove the message from the chat
+        setChatMessages((prev) => prev.slice(0, prev.length - 1));
         setIsChatSending(false);
+        setFormData(content);
       });
 
     //
@@ -78,12 +92,25 @@ const Chats = () => {
 
   // scroll to bottom of chat
   useEffect(() => {
-    const chat = document.querySelector("#all-chats");
+    const chat = document.querySelector("#chat-box");
     chat.scrollTo(0, chat.scrollHeight);
   }, [chatMessages]);
 
   const handleNewChat = () => {
     toast.error("Due to API limitations, this feature is disabled.");
+  };
+
+  const handleLogout = () => {
+    toast.promise(logout(), {
+      loading: "Logging out...",
+      success: (res) => {
+        navigate("/");
+        return res.message;
+      },
+      error: (err) => {
+        return err.message || "Something went wrong";
+      },
+    });
   };
 
   return (
@@ -140,7 +167,10 @@ const Chats = () => {
                     <MdOutlineDelete className="w-5 h-5" />
                     <div className="ml-2 text-sm">Clear conversations</div>
                   </button>
-                  <button className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl">
+                  <button
+                    onClick={handleLogout}
+                    className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl"
+                  >
                     <IoIosLogOut className="w-5 h-5" />
                     <div className="ml-2 text-sm">Logout</div>
                   </button>
@@ -150,7 +180,13 @@ const Chats = () => {
           </div>
           <div className="flex flex-col flex-auto h-full p-6">
             <div className="flex flex-col flex-auto flex-shrink-0 h-full p-4 bg-gray-100 rounded-2xl">
-              <div className="flex flex-col h-full mb-4 overflow-x-auto">
+              <div
+                className="relative flex flex-col h-full mb-4 overflow-x-auto "
+                id="chat-box"
+              >
+                <span className="fixed px-4 py-2 bg-yellow-100 top-6 right-6 rounded-xl">
+                  Credits: {userCredits}
+                </span>
                 <div className="flex flex-col h-full">
                   <div className="flex flex-col items-center gap-2">
                     <h1 className="text-2xl font-semibold text-center">
@@ -162,27 +198,36 @@ const Chats = () => {
                     </p>
                   </div>
 
-                  <div id="all-chats" className="grid grid-cols-12 gap-y-2">
-                    {chatMessages.length > 0 &&
-                      chatMessages?.map((msg) => {
-                        if (msg.role === "user") {
-                          return (
-                            <UserChatMessage
-                              key={msg._id}
-                              name={currentUser.name}
-                              message={msg.content}
-                            />
-                          );
-                        } else {
-                          return (
-                            <BumblebeeChatMessage
-                              key={msg._id}
-                              message={msg.content}
-                            />
-                          );
-                        }
-                      })}
-                  </div>
+                  {chatMessages.length > 0 ? (
+                    <div id="all-chats" className="grid grid-cols-12 gap-y-2">
+                      {chatMessages.length > 0 &&
+                        chatMessages?.map((msg) => {
+                          if (msg.role === "user") {
+                            return (
+                              <UserChatMessage
+                                key={msg._id}
+                                name={currentUser.name}
+                                message={msg.content}
+                              />
+                            );
+                          } else {
+                            return (
+                              <BumblebeeChatMessage
+                                key={msg._id}
+                                message={msg.content}
+                              />
+                            );
+                          }
+                        })}
+                      {isChatSending && <BumbleBeeIsTyping />}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center w-full h-full gap-2">
+                      <p className="px-4 py-2 text-sm text-center w-max rounded-xl">
+                        You have no active conversations.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
               {/* <div className="flex flex-row items-center w-full h-16 px-4 bg-white rounded-xl"> */}
@@ -262,12 +307,64 @@ const BumblebeeChatMessage = ({ message }) => {
         <img
           src={pp}
           alt=""
-          className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-indigo-500 rounded-full"
+          className="flex flex-col items-center self-start justify-center flex-shrink-0 w-10 h-10 mt-2 bg-indigo-500 rounded-full"
         />
-        <div className="relative px-4 py-2 ml-3 text-sm bg-white shadow rounded-xl">
-          <div>{message}</div>
+        {!isChatHasCode ? (
+          <div className="relative px-4 py-2 ml-3 text-sm bg-white shadow rounded-xl">
+            <div>{message}</div>
+          </div>
+        ) : (
+          <div className="relative px-4 py-2 pt-5 ml-3 text-sm bg-white shadow rounded-xl">
+            {message.split("```").map((msg, index) => {
+              if (index % 2 === 0) {
+                return (
+                  <div key={index} className="mb-4">
+                    <div>{msg}</div>
+                  </div>
+                );
+              } else {
+                return (
+                  <SyntaxHighlighter
+                    key={index}
+                    showLineNumbers
+                    wrapLongLines
+                    style={atelierCaveLight}
+                    className="mb-4"
+                    language={msg.split(" ")[0]}
+                  >
+                    {/* remove the first word  */}
+                    {msg.split(" ").slice(1).join(" ")}
+                  </SyntaxHighlighter>
+                );
+              }
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const BumbleBeeIsTyping = () => {
+  return (
+    <div className="col-start-1 col-end-8 p-3 rounded-lg">
+      <div className="flex flex-row items-center">
+        <img
+          src={pp}
+          alt=""
+          className="flex items-center self-start justify-center flex-shrink-0 w-10 h-10 mt-2 bg-indigo-500 rounded-full"
+        />
+        <div className="relative px-4 ml-3 text-sm bg-white shadow rounded-xl">
+          <div>
+            <ReactLoading type="bubbles" color="#000" height={40} width={40} />
+          </div>
         </div>
       </div>
     </div>
   );
+};
+
+const isChatHasCode = (message) => {
+  const regex = /```[a-zA-Z]+\n/;
+  return regex.test(message);
 };

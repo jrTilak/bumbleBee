@@ -18,6 +18,16 @@ export const generateChatCompletion = async (
       };
       return res.status(response.status).json(response);
     }
+
+    if (user.credits <= 0) {
+      const response = {
+        status: 402,
+        message: "Insufficient credits, Try next day!",
+        data: null,
+      };
+      return res.status(response.status).json(response);
+    }
+
     // grab chats of user
     const chats = user.chats.map(({ role, content }) => ({
       role,
@@ -35,6 +45,8 @@ export const generateChatCompletion = async (
       messages: chats,
     });
     user.chats.push(chatResponse.data.choices[0].message);
+    user.credits -= 1;
+
     await user.save();
     const response = {
       status: 200,

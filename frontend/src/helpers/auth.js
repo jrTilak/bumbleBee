@@ -57,3 +57,19 @@ export const validateToken = async () => {
     }
   });
 };
+
+export const logout = async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/logout`,
+        {
+          withCredentials: true,
+        }
+      );
+      resolve(res.data);
+    } catch (error) {
+      reject(error.response.data);
+    }
+  });
+};

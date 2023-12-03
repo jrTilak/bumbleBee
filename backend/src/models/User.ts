@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema({
     max: 1024,
   },
   chats: [chatSchema],
+  credits: {
+    type: Number,
+    default: 10,
+  },
 });
 
 export default mongoose.model("User", userSchema);
