@@ -2,7 +2,7 @@
   "name": "bumblebee-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\" ",
