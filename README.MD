@@ -25,7 +25,7 @@ Bumblebee is an AI powered chatbot that can help you with your queries. It is a 
 
 ## Built With
  
-![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)[![Vite.js][Vite.js]][Vite-url] [![React.js][React.js]][React-url] [![Node.js][Node.js]][Node-url] [![CSS][CSS]][CSS-url] [![HTML][HTML]][HTML-url]
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB) [![Vite.js][Vite.js]][Vite-url] [![React.js][React.js]][React-url] [![Node.js][Node.js]][Node-url] [![CSS][CSS]][CSS-url] [![HTML][HTML]][HTML-url]
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
