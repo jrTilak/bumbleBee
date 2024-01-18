@@ -5,7 +5,7 @@ function Footer() {
   return (
     <footer>
       <div className="max-w-6xl px-4 mx-auto sm:px-6">
-        <div className="py-4 border-t border-gray-200 md:flex md:items-center md:justify-between md:py-8">
+        <div className="py-4 border-t border-gray-200 flex items-center justify-between md:py-8 flex-col sm:">
           {/* Social links */}
           <ul className="flex mb-4 md:order-1 md:ml-4 md:mb-0">
             <li className="ml-4">
