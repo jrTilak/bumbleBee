@@ -206,7 +206,7 @@ const Chats = () => {
                 className="relative flex flex-col h-full mb-4 overflow-x-auto "
                 id="chat-box"
               >
-                <span className="fixed px-4 py-2 top-6 left-6 rounded-xl">
+                <span className="fixed px-4 py-2 top-6 left-6 rounded-xl z-40">
                   <GiHamburgerMenu
                     onClick={() => {
                       handleNav(true);
@@ -214,7 +214,7 @@ const Chats = () => {
                     className="w-6 h-6 md:hidden"
                   />
                 </span>
-                <span className="fixed px-4 py-2 bg-yellow-100 top-6 right-6 rounded-xl text-sm sm:text-base">
+                <span className="fixed px-4 py-2 z-40 bg-yellow-100 top-6 right-6 rounded-xl text-sm sm:text-base">
                   Credits: {userCredits}
                 </span>
                 <div className="flex flex-col h-full">
@@ -229,7 +229,7 @@ const Chats = () => {
                   </div>
 
                   {chatMessages.length > 0 ? (
-                    <div id="all-chats" className="grid grid-cols-12 gap-y-2">
+                    <div id="all-chats" className="grid grid-cols-12 md:gap-y-2">
                       {chatMessages.length > 0 &&
                         chatMessages?.map((msg) => {
                           if (msg.role === "user") {
@@ -319,7 +319,7 @@ const UserAvatar = ({ name }) => {
 
 const UserChatMessage = ({ name, message }) => {
   return (
-    <div className="col-start-2 md:col-start-6 col-end-13 p-3 rounded-lg">
+    <div className="col-start-2 md:col-start-6 col-end-13 p-3 pl-0 pr-0 md:pl3 md:pr-3 rounded-lg">
       <div className="flex flex-row-reverse items-center justify-start">
         <UserAvatar name={name} />
         <div className="relative px-4 py-2 mr-3 text-sm bg-indigo-100 shadow chat-content rounded-xl">
@@ -332,7 +332,7 @@ const UserChatMessage = ({ name, message }) => {
 
 const BumblebeeChatMessage = ({ message }) => {
   return (
-    <div className="col-start-1 col-end-12 md:col-end-8 p-3 rounded-lg ">
+    <div className="col-start-1 col-end-12 md:col-end-8 p-3 pl-0 pr-0 md:pl3 md:pr-3 rounded-lg ">
       <div className="flex flex-row items-center">
         <img
           src={pp}
@@ -344,7 +344,7 @@ const BumblebeeChatMessage = ({ message }) => {
             <div>{message}</div>
           </div>
         ) : (
-          <div className="relative px-4 py-2 pt-5 ml-3 text-sm bg-white shadow rounded-xl">
+          <div className="relative p-2 md:px-4 nmd:py-2 md:pt-5 ml-3 text-sm bg-white shadow rounded-xl overflow-hidden break-words">
             {message.split("```").map((msg, index) => {
               if (index % 2 === 0) {
                 return (
@@ -377,7 +377,7 @@ const BumblebeeChatMessage = ({ message }) => {
 
 const BumbleBeeIsTyping = () => {
   return (
-    <div className="col-start-1 col-end-12 md:col-end-8 p-3 rounded-lg">
+    <div className="col-start-1 col-end-12 md:col-end-8 p-3 pl-0 pr-0 md:pl3 md:pr-3 rounded-lg">
       <div className="flex flex-row items-center">
         <img
           src={pp}
