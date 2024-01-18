@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import pp from "../images/favicon.png";
 import { VscSend } from "react-icons/vsc";
+import Markdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import {
@@ -345,37 +346,11 @@ const BumblebeeChatMessage = ({ message }) => {
           alt=""
           className="flex flex-col items-center self-start justify-center flex-shrink-0 w-10 h-10 mt-2 bg-indigo-500 rounded-full"
         />
-        {!isChatHasCode ? (
-          <div className="relative px-4 py-2 ml-3 text-sm bg-white shadow rounded-xl">
-            <div>{message}</div>
+        <div className="relative px-4 py-2 ml-3 text-sm bg-white shadow rounded-xl">
+          <div className="prose lg:prose-xl">
+            <Markdown>{message}</Markdown>
           </div>
-        ) : (
-          <div className="relative p-2 md:px-4 nmd:py-2 md:pt-5 ml-3 text-sm bg-white shadow rounded-xl overflow-hidden break-words">
-            {message.split("```").map((msg, index) => {
-              if (index % 2 === 0) {
-                return (
-                  <div key={index} className="mb-4">
-                    <div>{msg}</div>
-                  </div>
-                );
-              } else {
-                return (
-                  <SyntaxHighlighter
-                    key={index}
-                    showLineNumbers
-                    wrapLongLines
-                    style={atelierCaveLight}
-                    className="mb-4"
-                    language={msg.split(" ")[0]}
-                  >
-                    {/* remove the first word  */}
-                    {msg.split(" ").slice(1).join(" ")}
-                  </SyntaxHighlighter>
-                );
-              }
-            })}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
@@ -398,9 +373,4 @@ const BumbleBeeIsTyping = () => {
       </div>
     </div>
   );
-};
-
-const isChatHasCode = (message) => {
-  const regex = /```[a-zA-Z]+\n/;
-  return regex.test(message);
 };
