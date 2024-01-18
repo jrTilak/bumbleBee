@@ -97,7 +97,7 @@ export const userSignupAsGuest = async (
       dictionaries: [names, starWars, adjectives],
       length: 1,
     });
-    const email = `${name}@email.com`;
+    const email = `${name.toLowerCase()}@guest_email.com`;
     const password = name.toLowerCase().split(" ").join("");
 
     const hashedPassword = await hash(password, 10);
