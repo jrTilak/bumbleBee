@@ -13,7 +13,6 @@ import AOS from 'aos';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import ResetPassword from './pages/ResetPassword';
 import Chats from './pages/Chats';
 
 function App() {
@@ -41,7 +40,6 @@ function App() {
         <Route exact path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/chats" element={<Chats />} />
       </Routes>
     </>

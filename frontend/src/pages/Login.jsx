@@ -65,12 +65,6 @@ function Login() {
                         >
                           Password
                         </label>
-                        <Link
-                          to="/reset-password"
-                          className="text-sm font-medium text-blue-600 hover:underline"
-                        >
-                          Having trouble signing in?
-                        </Link>
                       </div>
                       <input
                         autoComplete="on"

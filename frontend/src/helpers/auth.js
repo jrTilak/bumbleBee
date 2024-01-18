@@ -42,6 +42,22 @@ export const signup = (name, email, password) => {
   });
 };
 
+export const signupAsGuest = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/guest`,
+        {
+          withCredentials: true,
+        }
+      );
+      resolve(res.data);
+    } catch (error) {
+      reject(error.response.data);
+    }
+  });
+};
+
 export const validateToken = async () => {
   return new Promise(async (resolve, reject) => {
     try {
