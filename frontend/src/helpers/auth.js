@@ -47,6 +47,7 @@ export const signupAsGuest = () => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/guest`,
+        {},
         {
           withCredentials: true,
         }
