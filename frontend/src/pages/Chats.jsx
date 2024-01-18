@@ -330,7 +330,9 @@ const UserChatMessage = ({ name, message }) => {
       <div className="flex flex-row-reverse items-center justify-start">
         <UserAvatar name={name} />
         <div className="relative px-4 py-2 mr-3 text-sm bg-indigo-100 shadow chat-content rounded-xl">
-          <div>{message}</div>
+          <div className="prose-sm">
+            <Markdown>{message}</Markdown>
+          </div>
         </div>
       </div>
     </div>
@@ -347,7 +349,7 @@ const BumblebeeChatMessage = ({ message }) => {
           className="flex flex-col items-center self-start justify-center flex-shrink-0 w-10 h-10 mt-2 bg-indigo-500 rounded-full"
         />
         <div className="relative px-4 py-2 ml-3 text-sm bg-white shadow rounded-xl">
-          <div className="prose lg:prose-xl">
+          <div className="prose-sm">
             <Markdown>{message}</Markdown>
           </div>
         </div>
