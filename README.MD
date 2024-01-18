@@ -1,10 +1,3 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Forks][forks-shield]][forks-url]
-[![Issues][issues-shield]][issues-url]
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -45,7 +38,7 @@ Bumblebee is an AI powered chatbot that can help you with your queries. It is a 
 [stars-url]: https://github.com/jrtilak/bumblebee/stargazers
 [issues-shield]: https://img.shields.io/github/issues/jrtilak/bumblebee.svg?style=for-the-badge
 [issues-url]: https://github.com/jrtilak/bumblebee/issues
-[product-screenshot]: https://repository-images.githubusercontent.com/652996745/de305753-89f8-42bb-87c1-9d6c06f19f70
+[product-screenshot]: /frontend/src/images/hero-image.png
 [React.js]: https://img.shields.io/badge/React.js-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org
 [Vite.js]: https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white
