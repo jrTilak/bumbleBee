@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa6";
 import { useAuthContext } from "../context/AuthContext";
@@ -17,7 +17,8 @@ import { IoIosLogOut } from "react-icons/io";
 import { MdOutlineDelete } from "react-icons/md";
 import ReactLoading from "react-loading";
 import { logout } from "../helpers/auth";
-
+import { GiHamburgerMenu } from "react-icons/gi";
+import { RxCross1 } from "react-icons/rx";
 const Chats = () => {
   const navigate = useNavigate();
   const { isUserLoggedIn, currentUser, isFetching } = useAuthContext();
@@ -25,6 +26,7 @@ const Chats = () => {
   const [formData, setFormData] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [userCredits, setUserCredits] = useState(0);
+  const navRef = useRef();
 
   useEffect(() => {
     if (currentUser) {
@@ -77,7 +79,7 @@ const Chats = () => {
     if (!isUserLoggedIn) {
       return navigate("/login");
     }
-  }, []); //
+  }, []);
 
   useLayoutEffect(() => {
     const fetchChats = async () => {
@@ -113,19 +115,39 @@ const Chats = () => {
     });
   };
 
+  const handleNav = (isToClose) => {
+    if (isToClose) {
+      navRef.current.classList.remove("-translate-x-full");
+      navRef.current.classList.add("translate-x-0");
+    } else {
+      navRef.current.classList.add("-translate-x-full");
+      navRef.current.classList.remove("translate-x-0");
+    }
+  };
+
   return (
     <>
       <div className="flex h-screen antialiased text-gray-800">
         <div className="flex flex-row w-full h-full overflow-x-hidden">
-          <div className="flex flex-col flex-shrink-0 w-64 py-8 pl-6 pr-2 bg-white">
-            <div className="flex flex-row items-center justify-center w-full h-12">
-              <div className="flex items-center justify-center w-10 h-10 text-indigo-700 bg-indigo-100 rounded-2xl">
-                <IoChatboxEllipsesOutline className="w-6 h-6" />
+          <div
+            ref={navRef}
+            className="flex-col flex-shrink-0 w-64 p-2 ms:py-8 md:pl-6 md:pr-2 bg-white fixed z-50 h-full md:static transition-all -translate-x-full md:translate-x-0 flex justify-between"
+          >
+            <RxCross1
+              onClick={() => {
+                handleNav(false);
+              }}
+              className="w-6 h-6 text-red-500 cursor-pointer md:hidden fixed top-4 right-4"
+            />
+
+            <div className="flex flex-col">
+              <div className="flex flex-row items-center justify-start md:justify-center w-full h-12">
+                <div className="flex items-center justify-center w-10 h-10 text-indigo-700 bg-indigo-100 rounded-2xl">
+                  <IoChatboxEllipsesOutline className="w-6 h-6" />
+                </div>
+                <div className="ml-2 text-2xl font-bold">All Chats</div>
               </div>
-              <div className="ml-2 text-2xl font-bold">All Chats</div>
-            </div>
-            <div className="flex flex-col justify-between h-full mt-8">
-              <div>
+              <div className="mt-8">
                 <div className="flex flex-row items-center justify-between text-xs">
                   <span className="font-bold">Active Conversations</span>
                   <span
@@ -155,44 +177,52 @@ const Chats = () => {
                   )}
                 </div>
               </div>
-              <div>
-                <div className="flex flex-row items-center justify-between mt-6 text-xs">
-                  <span className="font-bold">Settings</span>
-                </div>
-                <div className="flex flex-col mt-4 -mx-2 space-y-1">
-                  <button
-                    onClick={handleClearChats}
-                    className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl"
-                  >
-                    <MdOutlineDelete className="w-5 h-5" />
-                    <div className="ml-2 text-sm">Clear conversations</div>
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl"
-                  >
-                    <IoIosLogOut className="w-5 h-5" />
-                    <div className="ml-2 text-sm">Logout</div>
-                  </button>
-                </div>
+            </div>
+            <div>
+              <div className="flex flex-row items-center justify-between mt-6 text-xs">
+                <span className="font-bold">Settings</span>
+              </div>
+              <div className="flex flex-col mt-4 -mx-2 space-y-1">
+                <button
+                  onClick={handleClearChats}
+                  className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl"
+                >
+                  <MdOutlineDelete className="w-5 h-5" />
+                  <div className="ml-2 text-sm">Clear conversations</div>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex flex-row items-center p-2 hover:bg-gray-100 rounded-xl"
+                >
+                  <IoIosLogOut className="w-5 h-5" />
+                  <div className="ml-2 text-sm">Logout</div>
+                </button>
               </div>
             </div>
           </div>
-          <div className="flex flex-col flex-auto h-full p-6">
-            <div className="flex flex-col flex-auto flex-shrink-0 h-full p-4 bg-gray-100 rounded-2xl">
+          <div className="flex flex-col flex-auto h-full p-2 md:p-6 w-full">
+            <div className="flex flex-col flex-auto flex-shrink-0 h-full bg-gray-100 rounded-2xl">
               <div
                 className="relative flex flex-col h-full mb-4 overflow-x-auto "
                 id="chat-box"
               >
-                <span className="fixed px-4 py-2 bg-yellow-100 top-6 right-6 rounded-xl">
+                <span className="fixed px-4 py-2 top-6 left-6 rounded-xl">
+                  <GiHamburgerMenu
+                    onClick={() => {
+                      handleNav(true);
+                    }}
+                    className="w-6 h-6 md:hidden"
+                  />
+                </span>
+                <span className="fixed px-4 py-2 bg-yellow-100 top-6 right-6 rounded-xl text-sm sm:text-base">
                   Credits: {userCredits}
                 </span>
                 <div className="flex flex-col h-full">
                   <div className="flex flex-col items-center gap-2">
-                    <h1 className="text-2xl font-semibold text-center">
+                    <h1 className="text-lg sm:text-xl font-semibold text-center">
                       BumbleBee 1.0
                     </h1>
-                    <p className="px-4 py-2 text-sm text-center bg-red-200 w-max rounded-xl">
+                    <p className="px-4 py-2 text-xs sm:text-sm text-center bg-red-200 w-full md:w-max rounded-xl break-words">
                       Due to API limitations, you can send only 10 messages per
                       day.
                     </p>
@@ -289,7 +319,7 @@ const UserAvatar = ({ name }) => {
 
 const UserChatMessage = ({ name, message }) => {
   return (
-    <div className="col-start-6 col-end-13 p-3 rounded-lg">
+    <div className="col-start-6 col-end-13 p-3 rounded-lg w-[80vw] md:w-auto">
       <div className="flex flex-row-reverse items-center justify-start">
         <UserAvatar name={name} />
         <div className="relative px-4 py-2 mr-3 text-sm bg-indigo-100 shadow chat-content rounded-xl">
@@ -302,7 +332,7 @@ const UserChatMessage = ({ name, message }) => {
 
 const BumblebeeChatMessage = ({ message }) => {
   return (
-    <div className="col-start-1 col-end-8 p-3 rounded-lg">
+    <div className="col-start-1 col-end-8 p-3 rounded-lg w-[80vw] md:w-auto">
       <div className="flex flex-row items-center">
         <img
           src={pp}
@@ -347,7 +377,7 @@ const BumblebeeChatMessage = ({ message }) => {
 
 const BumbleBeeIsTyping = () => {
   return (
-    <div className="col-start-1 col-end-8 p-3 rounded-lg">
+    <div className="col-start-1 col-end-8 p-3 rounded-lg w-[80vw] md:w-auto">
       <div className="flex flex-row items-center">
         <img
           src={pp}

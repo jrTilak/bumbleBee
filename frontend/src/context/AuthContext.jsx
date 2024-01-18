@@ -70,7 +70,7 @@ const AuthContextProvider = ({ children }) => {
       },
     });
   };
-  const userSignupAsGuest = async (name, email, password) => {
+  const userSignupAsGuest = async () => {
     toast.promise(signupAsGuest(), {
       loading: "Hold on, we're signing you up...",
       success: (res) => {
