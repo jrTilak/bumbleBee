@@ -127,7 +127,10 @@ const Chats = () => {
 
   return (
     <>
-      <div className="flex h-screen antialiased text-gray-800">
+      <div
+        className="flex antialiased text-gray-800"
+        style={{ height: "100dvh" }}
+      >
         <div className="flex flex-row w-full h-full overflow-x-hidden">
           <div
             ref={navRef}
@@ -229,7 +232,10 @@ const Chats = () => {
                   </div>
 
                   {chatMessages.length > 0 ? (
-                    <div id="all-chats" className="grid grid-cols-12 md:gap-y-2">
+                    <div
+                      id="all-chats"
+                      className="grid grid-cols-12 md:gap-y-2"
+                    >
                       {chatMessages.length > 0 &&
                         chatMessages?.map((msg) => {
                           if (msg.role === "user") {
