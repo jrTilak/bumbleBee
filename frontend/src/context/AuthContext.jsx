@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { login, signup, validateToken } from "../helpers/auth";
+import { login, signup, signupAsGuest, validateToken } from "../helpers/auth";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -70,6 +70,23 @@ const AuthContextProvider = ({ children }) => {
       },
     });
   };
+  const userSignupAsGuest = async (name, email, password) => {
+    toast.promise(signupAsGuest(), {
+      loading: "Hold on, we're signing you up...",
+      success: (res) => {
+        setIsUserLoggedIn(true);
+        setCurrentUser(res.data);
+        // href to /chats using react-router-dom
+        navigate("/chats");
+        setIsFetching(false);
+        return res.message;
+      },
+      error: (err) => {
+        setIsFetching(false);
+        return err.message;
+      },
+    });
+  };
 
   const value = {
     isUserLoggedIn,
@@ -80,6 +97,7 @@ const AuthContextProvider = ({ children }) => {
     setIsFetching,
     userLogin,
     userSignup,
+    userSignupAsGuest,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
