@@ -46,13 +46,11 @@ const Chats = () => {
     setFormData("");
     sendChatRequest(content)
       .then((res) => {
-        console.log(res);
         setChatMessages((prev) => [...prev, res.data]);
         setIsChatSending(false);
         setUserCredits((prev) => prev - 1);
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err.response.data.message || "Something went wrong");
         //remove the message from the chat
         setChatMessages((prev) => prev.slice(0, prev.length - 1));
@@ -86,7 +84,6 @@ const Chats = () => {
     const fetchChats = async () => {
       if (!isFetching && isUserLoggedIn && currentUser) {
         const chats = await getUserChats();
-        console.log(chats);
         setChatMessages([...chats]);
       }
     };
