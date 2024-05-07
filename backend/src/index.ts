@@ -1,4 +1,4 @@
-export {}
+export default {}
 import app from "./app.js";
 import { connectDB } from "./db/connection.js";
 
