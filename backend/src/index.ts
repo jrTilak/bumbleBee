@@ -1,4 +1,4 @@
-export default {}
+
 import app from "./app.js";
 import { connectDB } from "./db/connection.js";
 
@@ -14,3 +14,5 @@ connectDB()
   .catch((err) => {
     console.log(err);
   });
+
+export default app;
