@@ -50,7 +50,7 @@ export const generateChatCompletion = async (req, res, next) => {
         console.log(error);
         const response = {
             status: 500,
-            message: "Something went wrong, Please try again!",
+            message: "OpenAI Credits exhausted, Please contact support!",
             data: error.message,
         };
         return res.status(response.status).json(response);
