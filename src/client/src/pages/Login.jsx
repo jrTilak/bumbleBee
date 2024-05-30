@@ -5,6 +5,7 @@ import Header from "../partials/Header";
 import { useAuthContext } from "../context/AuthContext";
 
 function Login() {
+  const { userSignupAsGuest } = useAuthContext();
   const { userLogin } = useAuthContext();
   const [formData, setFormData] = useState({
     email: "",
@@ -86,6 +87,15 @@ function Login() {
                         Sign in
                       </button>
                     </div>
+                  </div>
+                  <div className="mt-4 ">
+                    <button
+                      type="button"
+                      onClick={userSignupAsGuest}
+                      className="w-full text-white bg-gray-900 btn hover:bg-gray-800"
+                    >
+                      Continue as Guest
+                    </button>
                   </div>
                 </form>
                 <div className="flex items-center my-6">

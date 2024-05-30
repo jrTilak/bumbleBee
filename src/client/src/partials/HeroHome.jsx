@@ -59,9 +59,10 @@ function HeroHome() {
                 data-aos="zoom-y-out"
                 data-aos-delay="150"
               >
-                Bumblebee is an AI powered chatbot that can help you with your
-                queries. It is a web based application that can be accessed from
-                anywhere.
+                Bumblebee is an AI powered chatbot based on Google's Gemini AI.
+                It is trained on custom data of Bumblebee movie. So the project
+                is named after his name (Bumblebee). It is designed to tell
+                jokes, chat frankly, and use emojis in the conversation as well.
               </p>
               <div
                 className="max-w-xs mx-auto sm:max-w-none sm:flex sm:justify-center"
