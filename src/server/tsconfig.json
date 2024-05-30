@@ -5,7 +5,7 @@
     "target": "ESNext",
     "sourceMap": true,
     "outDir": "dist",
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*.ts", "src/index.ts",]
+  "include": ["src/**/*.ts", "src/index.ts", "api/index.ts"]
 }

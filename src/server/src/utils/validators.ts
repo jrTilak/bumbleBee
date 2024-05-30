@@ -28,7 +28,7 @@ export const loginValidator = [
   body("password")
     .trim()
     .isLength({ min: 6 })
-    .withMessage("Password should contain atleast 6 characters"),
+    .withMessage("Password should contain at least 6 characters"),
 ];
 
 export const signupValidator = [

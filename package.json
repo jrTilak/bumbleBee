@@ -1,10 +1,11 @@
 {
-  "name": "bumbleBee",
+  "name": "bumblebee",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:server": "pnpm --filter server dev",
+    "dev:client": "pnpm --filter client dev"
   },
   "keywords": [],
   "author": "",

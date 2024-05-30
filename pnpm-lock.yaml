@@ -6,74 +6,9 @@ settings:
 
 importers:
 
-  backend:
-    dependencies:
-      bcrypt:
-        specifier: ^5.1.0
-        version: 5.1.1
-      concurrently:
-        specifier: ^8.2.0
-        version: 8.2.2
-      cookie-parser:
-        specifier: ^1.4.6
-        version: 1.4.6
-      cors:
-        specifier: ^2.8.5
-        version: 2.8.5
-      dotenv:
-        specifier: ^16.3.1
-        version: 16.4.5
-      express:
-        specifier: ^4.18.2
-        version: 4.19.2
-      express-validator:
-        specifier: ^7.0.1
-        version: 7.1.0
-      jsonwebtoken:
-        specifier: ^9.0.1
-        version: 9.0.2
-      mongoose:
-        specifier: ^7.4.2
-        version: 7.6.12
-      morgan:
-        specifier: ^1.10.0
-        version: 1.10.0
-      openai:
-        specifier: ^3.3.0
-        version: 3.3.0
-      unique-names-generator:
-        specifier: ^4.7.1
-        version: 4.7.1
-    devDependencies:
-      '@types/bcrypt':
-        specifier: ^5.0.0
-        version: 5.0.2
-      '@types/cookie-parser':
-        specifier: ^1.4.3
-        version: 1.4.7
-      '@types/cors':
-        specifier: ^2.8.13
-        version: 2.8.17
-      '@types/express':
-        specifier: ^4.17.17
-        version: 4.17.21
-      '@types/jsonwebtoken':
-        specifier: ^9.0.1
-        version: 9.0.6
-      '@types/node':
-        specifier: ^20.4.8
-        version: 20.12.13
-      nodemon:
-        specifier: ^3.0.1
-        version: 3.1.2
-      ts-node:
-        specifier: ^10.9.1
-        version: 10.9.2(@types/node@20.12.13)(typescript@5.4.5)
-      typescript:
-        specifier: ^5.1.6
-        version: 5.4.5
+  .: {}
 
-  frontend:
+  src/client:
     dependencies:
       '@tailwindcss/forms':
         specifier: ^0.5.3
@@ -139,6 +74,73 @@ importers:
       vite:
         specifier: ^4.1.1
         version: 4.5.3(@types/node@20.12.13)(sass@1.77.3)
+
+  src/server:
+    dependencies:
+      '@google/generative-ai':
+        specifier: ^0.12.0
+        version: 0.12.0
+      bcrypt:
+        specifier: ^5.1.0
+        version: 5.1.1
+      concurrently:
+        specifier: ^8.2.0
+        version: 8.2.2
+      cookie-parser:
+        specifier: ^1.4.6
+        version: 1.4.6
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.4.5
+      express:
+        specifier: ^4.18.2
+        version: 4.19.2
+      express-validator:
+        specifier: ^7.0.1
+        version: 7.1.0
+      jsonwebtoken:
+        specifier: ^9.0.1
+        version: 9.0.2
+      mongoose:
+        specifier: ^7.4.2
+        version: 7.6.12
+      morgan:
+        specifier: ^1.10.0
+        version: 1.10.0
+      unique-names-generator:
+        specifier: ^4.7.1
+        version: 4.7.1
+    devDependencies:
+      '@types/bcrypt':
+        specifier: ^5.0.0
+        version: 5.0.2
+      '@types/cookie-parser':
+        specifier: ^1.4.3
+        version: 1.4.7
+      '@types/cors':
+        specifier: ^2.8.13
+        version: 2.8.17
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.21
+      '@types/jsonwebtoken':
+        specifier: ^9.0.1
+        version: 9.0.6
+      '@types/node':
+        specifier: ^20.4.8
+        version: 20.12.13
+      nodemon:
+        specifier: ^3.0.1
+        version: 3.1.2
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.2(@types/node@20.12.13)(typescript@5.4.5)
+      typescript:
+        specifier: ^5.1.6
+        version: 5.4.5
 
 packages:
 
@@ -393,6 +395,10 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@google/generative-ai@0.12.0':
+    resolution: {integrity: sha512-krWjurjEUHSFhCX4lGHMOhbnpBfYZGU31mpHpPBQwcfWm0T+/+wxC4UCAJfkxxc3/HvGJVG8r4AqrffaeDHDlA==}
+    engines: {node: '>=18.0.0'}
+
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -636,9 +642,6 @@ packages:
     hasBin: true
     peerDependencies:
       postcss: ^8.1.0
-
-  axios@0.26.1:
-    resolution: {integrity: sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==}
 
   axios@1.7.2:
     resolution: {integrity: sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==}
@@ -1610,9 +1613,6 @@ packages:
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
-  openai@3.3.0:
-    resolution: {integrity: sha512-uqxI/Au+aPRnsaQRe8CojU0eCR7I0mBiKjD3sNMzY6DaC1ZVrc85u98mtJW6voDug8fgGN+DIZmTDxTthxb7dQ==}
-
   parse-entities@2.0.0:
     resolution: {integrity: sha512-kkywGpCcRYhqQIchaWqZ875wzpS/bMKhz5HnN3p7wveJTkTtyAB/AlnS0f8DFSqYW1T82t6yEAkEcB+A1I3MbQ==}
 
@@ -2476,6 +2476,8 @@ snapshots:
   '@esbuild/win32-x64@0.18.20':
     optional: true
 
+  '@google/generative-ai@0.12.0': {}
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -2750,12 +2752,6 @@ snapshots:
       picocolors: 1.0.1
       postcss: 8.4.38
       postcss-value-parser: 4.2.0
-
-  axios@0.26.1:
-    dependencies:
-      follow-redirects: 1.15.6
-    transitivePeerDependencies:
-      - debug
 
   axios@1.7.2:
     dependencies:
@@ -3869,13 +3865,6 @@ snapshots:
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
-
-  openai@3.3.0:
-    dependencies:
-      axios: 0.26.1
-      form-data: 4.0.0
-    transitivePeerDependencies:
-      - debug
 
   parse-entities@2.0.0:
     dependencies:

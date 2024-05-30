@@ -130,7 +130,7 @@ out
 .pnp.*
 
 # dist 
-dist/*
+dist
 
 # env
 .env

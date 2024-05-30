@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/User.js";
-import { OpenAIApi, ChatCompletionRequestMessage } from "openai";
-import { configureOpenAI } from "../config/openai.config.js";
+import genAI from "../config/gemini.config.js";
+import { SYSTEM_INSTRUCTIONS } from "../utils/constants.js";
+
 export const generateChatCompletion = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { message } = req.body;
+  const { message, history } = req.body;
   try {
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
@@ -28,37 +29,48 @@ export const generateChatCompletion = async (
       return res.status(response.status).json(response);
     }
 
-    // grab chats of user
-    const chats = user.chats.map(({ role, content }) => ({
-      role,
-      content,
-    })) as ChatCompletionRequestMessage[];
-    chats.push({ content: message, role: "user" });
-    user.chats.push({ content: message, role: "user" });
-
-    // send all chats with new one to openAI API
-    const config = configureOpenAI();
-    const openai = new OpenAIApi(config);
-    // get latest response
-    const chatResponse = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: chats,
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: SYSTEM_INSTRUCTIONS,
     });
-    user.chats.push(chatResponse.data.choices[0].message);
+
+    const chat = model.startChat({
+      history: history ?? [],
+      generationConfig: {
+        maxOutputTokens: 400,
+      },
+    });
+
+    const result = await chat.sendMessage(message);
+    const r = await result.response;
+    const text = r.text();
+
+    user.chats.push({
+      role: "user",
+      parts: [{ type: "text", content: message }],
+    });
+    user.chats.push({
+      role: "model",
+      parts: [{ type: "text", content: text }],
+    });
+
     user.credits -= 1;
 
     await user.save();
     const response = {
       status: 200,
       message: "OK",
-      data: chatResponse.data.choices[0].message,
+      data: {
+        response: text,
+        userCredits: user.credits,
+      },
     };
     return res.status(response.status).json(response);
   } catch (error) {
     console.log(error);
     const response = {
       status: 500,
-      message: "OpenAI Credits exhausted, Please contact support!",
+      message: "API Credits exhausted, Please contact support!",
       data: error.message,
     };
     return res.status(response.status).json(response);

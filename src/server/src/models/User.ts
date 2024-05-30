@@ -2,18 +2,19 @@ import mongoose from "mongoose";
 import { randomUUID } from "crypto";
 
 const chatSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    default: randomUUID(),
-  },
   role: {
     type: String,
     required: true,
   },
-  content: {
-    type: String,
-    required: true,
-  },
+  parts: [
+    {
+      type: {
+        type: String,
+        required: true,
+      },
+      required: true,
+    },
+  ],
 });
 
 const userSchema = new mongoose.Schema({
@@ -39,7 +40,7 @@ const userSchema = new mongoose.Schema({
   chats: [chatSchema],
   credits: {
     type: Number,
-    default: 10,
+    default: 20,
   },
 });
 
