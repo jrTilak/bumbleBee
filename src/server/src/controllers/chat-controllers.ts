@@ -46,7 +46,7 @@ export const generateChatCompletion = async (
         };
       }),
       generationConfig: {
-        maxOutputTokens: 400,
+        maxOutputTokens: 200,
       },
     });
 
@@ -77,8 +77,7 @@ export const generateChatCompletion = async (
     console.log(error);
     const response = {
       status: 500,
-      message: "API Credits exhausted, Please contact support!",
-      data: error.message,
+      message: error.message ?? "Something went wrong, Please try again!",
     };
     return res.status(response.status).json(response);
   }
