@@ -8,7 +8,7 @@ export const generateChatCompletion = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { message, history } = req.body;
+  const { message } = req.body;
   try {
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
@@ -35,10 +35,24 @@ export const generateChatCompletion = async (
     });
 
     const chat = model.startChat({
-      history: history ?? [],
+      history: (user.chats || []).map((chat) => {
+        return {
+          role: chat.role,
+          parts: chat.parts.map((part) => {
+            return {
+              text: part.text,
+            };
+          }),
+        };
+      }),
       generationConfig: {
         maxOutputTokens: 400,
       },
+    });
+
+    user.chats.push({
+      role: "user",
+      parts: [{ text: message }],
     });
 
     const result = await chat.sendMessage(message);
@@ -46,12 +60,8 @@ export const generateChatCompletion = async (
     const text = r.text();
 
     user.chats.push({
-      role: "user",
-      parts: [{ type: "text", content: message }],
-    });
-    user.chats.push({
       role: "model",
-      parts: [{ type: "text", content: text }],
+      parts: [{ text: text }],
     });
 
     user.credits -= 1;
@@ -60,10 +70,7 @@ export const generateChatCompletion = async (
     const response = {
       status: 200,
       message: "OK",
-      data: {
-        response: text,
-        userCredits: user.credits,
-      },
+      data: text,
     };
     return res.status(response.status).json(response);
   } catch (error) {
@@ -91,7 +98,13 @@ export const sendChatsToUser = async (
     if (user._id.toString() !== res.locals.jwtData.id) {
       return res.status(401).send("Permissions didn't match");
     }
-    return res.status(200).json({ message: "OK", data: user.chats });
+    return res.status(200).json({
+      message: "OK",
+      data: {
+        chats: user.chats,
+        credits: user.credits,
+      },
+    });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: "ERROR", cause: error.message });

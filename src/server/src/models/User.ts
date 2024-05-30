@@ -8,11 +8,10 @@ const chatSchema = new mongoose.Schema({
   },
   parts: [
     {
-      type: {
+      text: {
         type: String,
         required: true,
       },
-      required: true,
     },
   ],
 });
@@ -40,7 +39,7 @@ const userSchema = new mongoose.Schema({
   chats: [chatSchema],
   credits: {
     type: Number,
-    default: 20,
+    default: 10,
   },
 });
 

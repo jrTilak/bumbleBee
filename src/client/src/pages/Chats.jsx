@@ -7,8 +7,6 @@ import toast from "react-hot-toast";
 import pp from "../images/favicon.png";
 import { VscSend } from "react-icons/vsc";
 import Markdown from "react-markdown";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import {
   clearConversation,
   getUserChats,
@@ -41,12 +39,18 @@ const Chats = () => {
       return toast.error("Please wait for the previous message to be sent!");
     setIsChatSending(true);
     const content = formData;
-    const newMessage = { role: "user", content };
+    const newMessage = { role: "user", parts: [{ text: content }] };
     setChatMessages((prev) => [...prev, newMessage]);
     setFormData("");
     sendChatRequest(content)
       .then((res) => {
-        setChatMessages((prev) => [...prev, res.data]);
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            role: "model",
+            parts: [{ text: res.data }],
+          },
+        ]);
         setIsChatSending(false);
         setUserCredits((prev) => prev - 1);
       })
@@ -84,7 +88,7 @@ const Chats = () => {
     const fetchChats = async () => {
       if (!isFetching && isUserLoggedIn && currentUser) {
         const chats = await getUserChats();
-        setChatMessages([...chats]);
+        setChatMessages([...chats.chats]);
       }
     };
     fetchChats();
@@ -122,6 +126,10 @@ const Chats = () => {
       navRef.current.classList.remove("translate-x-0");
     }
   };
+
+  useEffect(() => {
+    console.log("chatMessages", chatMessages);
+  }, [chatMessages]);
 
   return (
     <>
@@ -241,14 +249,14 @@ const Chats = () => {
                               <UserChatMessage
                                 key={msg._id}
                                 name={currentUser.name}
-                                message={msg.content}
+                                message={msg.parts[0].text}
                               />
                             );
                           } else {
                             return (
                               <BumblebeeChatMessage
                                 key={msg._id}
-                                message={msg.content}
+                                message={msg.parts[0].text}
                               />
                             );
                           }
@@ -327,7 +335,7 @@ const UserChatMessage = ({ name, message }) => {
       <div className="flex flex-row-reverse items-center justify-start">
         <UserAvatar name={name} />
         <div className="relative px-4 py-2 mr-3 text-sm bg-indigo-100 shadow chat-content rounded-xl">
-          <div className="prose-sm">
+          <div className="prose-sm prose-a:text-blue-600 prose-a:underline">
             <Markdown>{message}</Markdown>
           </div>
         </div>
@@ -346,7 +354,7 @@ const BumblebeeChatMessage = ({ message }) => {
           className="flex flex-col items-center self-start justify-center flex-shrink-0 w-10 h-10 mt-2 bg-indigo-500 rounded-full"
         />
         <div className="relative px-4 py-2 ml-3 text-sm bg-white shadow rounded-xl">
-          <div className="prose-sm">
+          <div className="prose-sm prose-a:text-blue-600 prose-a:underline">
             <Markdown>{message}</Markdown>
           </div>
         </div>
