@@ -127,10 +127,6 @@ const Chats = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("chatMessages", chatMessages);
-  }, [chatMessages]);
-
   return (
     <>
       <div
@@ -229,7 +225,7 @@ const Chats = () => {
                 <div className="flex flex-col h-full">
                   <div className="flex flex-col items-center gap-2">
                     <h1 className="text-lg sm:text-xl font-semibold text-center">
-                      BumbleBee 1.0
+                      BumbleBee 2.0
                     </h1>
                     <p className="px-4 py-2 mt-6 text-xs sm:text-sm text-center bg-red-200 w-full md:w-max rounded-xl break-words">
                       Due to API limitations, you can send only 10 messages per

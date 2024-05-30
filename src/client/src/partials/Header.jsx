@@ -31,7 +31,7 @@ function Header() {
             >
               <img src={favicon} alt="" className="h-9 w-9" />
               <span className="text-xl font-bold tracking-wider text-gray-800 uppercase hidden sm:inline-block">
-                Bumblebee
+                Bumblebee 2.0
               </span>
             </Link>
           </div>
