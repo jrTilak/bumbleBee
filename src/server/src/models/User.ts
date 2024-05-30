@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
   chats: [chatSchema],
   credits: {
     type: Number,
-    default: 10,
+    default: 25,
   },
 });
 

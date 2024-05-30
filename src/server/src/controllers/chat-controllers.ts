@@ -46,7 +46,7 @@ export const generateChatCompletion = async (
         };
       }),
       generationConfig: {
-        maxOutputTokens: 200,
+        maxOutputTokens: 500,
       },
     });
 
